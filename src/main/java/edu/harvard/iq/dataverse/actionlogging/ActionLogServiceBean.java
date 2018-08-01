@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class ActionLogServiceBean {
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     /**

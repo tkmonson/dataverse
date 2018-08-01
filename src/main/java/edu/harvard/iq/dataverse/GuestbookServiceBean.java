@@ -20,7 +20,7 @@ import javax.persistence.Query;
 @Named
 public class GuestbookServiceBean implements java.io.Serializable {
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     

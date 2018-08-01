@@ -5,7 +5,7 @@ import datetime
 import csv
 import os
 from shutil import move
-base_url = 'http://localhost:4848/monitoring/domain/server/resources/dvnDbPool'
+base_url = 'http://localhost:4848/monitoring/domain/server/resources/dvnDbPool1'
 request = urllib2.Request(base_url, headers = { 'Accept' : 'application/json'})
 json1 = urllib2.urlopen(request).read()
 data1 = json.loads(json1)

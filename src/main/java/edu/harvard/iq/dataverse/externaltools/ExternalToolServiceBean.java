@@ -30,7 +30,7 @@ public class ExternalToolServiceBean {
 
     private static final Logger logger = Logger.getLogger(ExternalToolServiceBean.class.getCanonicalName());
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     public List<ExternalTool> findAll() {

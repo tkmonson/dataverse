@@ -58,7 +58,7 @@ public class DatasetVersionServiceBean implements java.io.Serializable {
     @EJB
     IndexServiceBean indexService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     /**

@@ -55,7 +55,7 @@ public class OAIRecordServiceBean implements java.io.Serializable {
     //@EJB
     //ExportService exportService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     EntityManager em;   
     
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dataverse.harvest.server.OAIRecordServiceBean");

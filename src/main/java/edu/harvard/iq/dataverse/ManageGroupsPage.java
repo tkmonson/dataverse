@@ -62,7 +62,7 @@ public class ManageGroupsPage implements java.io.Serializable {
     @Inject
     PermissionsWrapper permissionsWrapper;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     EntityManager em;
 
     @Inject

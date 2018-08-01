@@ -367,7 +367,7 @@ public class SettingsServiceBean {
         }
     }
     
-    @PersistenceContext
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     EntityManager em;
     
     @EJB

@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class OAuth2TokenDataServiceBean {
     
-    @PersistenceContext
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     public void store( OAuth2TokenData tokenData ) {

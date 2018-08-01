@@ -58,7 +58,7 @@ public class DataFileServiceBean implements java.io.Serializable {
     @EJB 
     IngestServiceBean ingestService;
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     // File type "classes" tags:

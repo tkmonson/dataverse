@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DataverseTimerServiceBean implements Serializable {
     @Resource
     javax.ejb.TimerService timerService;
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dataverse.timer.DataverseTimerServiceBean");
     @EJB

@@ -43,7 +43,7 @@ import org.apache.solr.common.SolrDocumentList;
 @Stateless
 @Named
 public class OAISetServiceBean implements java.io.Serializable {
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

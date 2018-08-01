@@ -22,7 +22,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 @Named
 public class FeaturedDataverseServiceBean {
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

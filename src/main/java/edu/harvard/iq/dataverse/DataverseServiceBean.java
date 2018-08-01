@@ -62,7 +62,7 @@ public class DataverseServiceBean implements java.io.Serializable {
     @Inject
     DataverseSession session;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     public Dataverse save(Dataverse dataverse) {

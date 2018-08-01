@@ -20,7 +20,7 @@ import javax.persistence.TypedQuery;
 @Named
 public class ControlledVocabularyValueServiceBean implements java.io.Serializable {
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     public List<ControlledVocabularyValue> findByDatasetFieldTypeId(Long dsftId) {

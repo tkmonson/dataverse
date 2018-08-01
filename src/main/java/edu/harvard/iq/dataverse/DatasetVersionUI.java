@@ -33,7 +33,7 @@ public class DatasetVersionUI implements Serializable {
 
     @EJB
     DataverseServiceBean dataverseService;
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;   
     
     public DatasetVersionUI() {

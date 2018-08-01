@@ -19,7 +19,7 @@ public class DataverseFacetServiceBean implements java.io.Serializable {
     
     public static final LruCache<Long,List<DataverseFacet>> cache = new LruCache<>();
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

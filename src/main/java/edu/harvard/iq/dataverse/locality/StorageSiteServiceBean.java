@@ -14,7 +14,7 @@ public class StorageSiteServiceBean {
 
     private static final Logger logger = Logger.getLogger(StorageSiteServiceBean.class.getCanonicalName());
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     public StorageSite find(long id) {

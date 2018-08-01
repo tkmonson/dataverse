@@ -74,7 +74,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @Stateless
 public class ImportServiceBean {
-    @PersistenceContext(unitName="VDCNet-ejbPU")
+    @PersistenceContext(unitName="VDCNet-ejbPU-1")
     private EntityManager em;
     
     private static final Logger logger = Logger.getLogger(ImportServiceBean.class.getCanonicalName());

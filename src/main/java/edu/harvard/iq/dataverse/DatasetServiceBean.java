@@ -37,6 +37,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -93,14 +94,27 @@ public class DatasetServiceBean implements java.io.Serializable {
     
     @EJB
     SystemConfig systemConfig;
+    
+    @Inject
+    DataverseSession session;
 
     private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     protected EntityManager em;
+    
+    @PersistenceContext(unitName = "VDCNet-ejbPU-2")
+    protected EntityManager em2;
+    
+    public EntityManager chooseEM(User user) {
+        if(user.isAuthenticated())  {
+            return em;
+        }
+        return em2;
+    }
 
     public Dataset find(Object pk) {
-        return em.find(Dataset.class, pk);
+        return chooseEM(session.getUser()).find(Dataset.class, pk);
     }
 
     public List<Dataset> findByOwnerId(Long ownerId) {

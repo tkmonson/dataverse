@@ -23,7 +23,7 @@ public class MetricsServiceBean implements Serializable {
 
     private static final SimpleDateFormat yyyymmFormat = new SimpleDateFormat(MetricsUtil.YEAR_AND_MONTH_PATTERN);
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     @EJB
     SystemConfig systemConfig;

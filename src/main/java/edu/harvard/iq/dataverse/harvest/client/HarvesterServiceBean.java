@@ -63,7 +63,7 @@ import javax.persistence.PersistenceContext;
 @Named
 @ManagedBean
 public class HarvesterServiceBean {
-    @PersistenceContext(unitName="VDCNet-ejbPU")
+    @PersistenceContext(unitName="VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

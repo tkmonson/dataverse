@@ -53,7 +53,7 @@ public class SavedSearchServiceBean {
 
     private final String resultString = "result";
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     public SavedSearch find(long id) {

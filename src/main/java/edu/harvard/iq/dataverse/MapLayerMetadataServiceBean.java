@@ -40,7 +40,7 @@ import javax.persistence.TypedQuery;
 public class MapLayerMetadataServiceBean {
     
    
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

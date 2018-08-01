@@ -65,7 +65,7 @@ public class ImportGenericServiceBean {
     @EJB
     SettingsServiceBean settingsService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     public static String DCTERMS = "http://purl.org/dc/terms/";

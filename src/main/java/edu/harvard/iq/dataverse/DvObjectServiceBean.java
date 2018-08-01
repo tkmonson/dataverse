@@ -31,7 +31,7 @@ import org.ocpsoft.common.util.Strings;
 @Named
 public class DvObjectServiceBean implements java.io.Serializable {
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     private static final Logger logger = Logger.getLogger(DvObjectServiceBean.class.getCanonicalName());

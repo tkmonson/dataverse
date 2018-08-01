@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 @Named
 public class MetadataBlockServiceBean {
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     

@@ -156,7 +156,7 @@ public class EjbDataverseEngine {
     @EJB
     DataCaptureModuleServiceBean dataCaptureModule;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

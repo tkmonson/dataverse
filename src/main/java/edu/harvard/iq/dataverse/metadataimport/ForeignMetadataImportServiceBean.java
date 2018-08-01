@@ -45,7 +45,7 @@ public class ForeignMetadataImportServiceBean {
     @EJB
     DatasetFieldServiceBean datasetfieldService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     ForeignMetadataFormatMapping findFormatMappingByName (String name) {

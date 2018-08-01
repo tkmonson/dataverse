@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 @Named
 public class FileDownloadServiceBean implements java.io.Serializable {
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

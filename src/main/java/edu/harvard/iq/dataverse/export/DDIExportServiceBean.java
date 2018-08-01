@@ -62,7 +62,7 @@ public class DDIExportServiceBean {
     @EJB
     VariableServiceBean variableService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     /*

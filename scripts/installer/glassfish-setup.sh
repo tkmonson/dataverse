@@ -14,6 +14,7 @@
 # database configuration: 
 # DB_PORT
 # DB_HOST
+# DB_SERVICE
 # DB_NAME
 # DB_USER
 # DB_PASS
@@ -107,16 +108,22 @@ function final_setup(){
         ./asadmin $ASADMIN_OPTS create-jdbc-connection-pool --restype javax.sql.DataSource \
                                         --datasourceclassname org.postgresql.ds.PGPoolingDataSource \
                                         --property create=true:User=$DB_USER:PortNumber=$DB_PORT:databaseName=$DB_NAME:password=$DB_PASS:ServerName=$DB_HOST \
-                                        dvnDbPool
+                                        dvnDbPool1
+
+        ./asadmin $ASADMIN_OPTS create-jdbc-connection-pool --restype javax.sql.DataSource \
+                                                --datasourceclassname org.postgresql.ds.PGPoolingDataSource \
+                                                --property create=true:User=$DB_USER:PortNumber=$DB_PORT:databaseName=$DB_NAME:password=$DB_PASS:ServerName=$DB_SERVICE \
+                                                dvnDbPool2
 
         ###
         # Create data sources
-        ./asadmin $ASADMIN_OPTS create-jdbc-resource --connectionpoolid dvnDbPool jdbc/VDCNetDS
+        ./asadmin $ASADMIN_OPTS create-jdbc-resource --connectionpoolid dvnDbPool1 jdbc/VDCNetDS1
+        ./asadmin $ASADMIN_OPTS create-jdbc-resource --connectionpoolid dvnDbPool2 jdbc/VDCNetDS2
 
         ###
         # Set up the data source for the timers
 
-        ./asadmin $ASADMIN_OPTS set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/VDCNetDS
+        ./asadmin $ASADMIN_OPTS set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/VDCNetDS1
 
         ./asadmin $ASADMIN_OPTS create-jvm-options "\-Djavax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
 
@@ -160,6 +167,12 @@ fi
 if [ -z "$DB_HOST" ]
  then
   echo "You must specify database host (DB_HOST)."
+  exit 1
+fi
+
+if [ -z "$DB_SERVICE" ]
+ then
+  echo "You must specify database service host (DB_SERVICE)."
   exit 1
 fi
 

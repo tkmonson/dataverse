@@ -39,7 +39,7 @@ import org.apache.commons.lang.StringUtils;
 public class RoleAssigneeServiceBean {
 
     private static final Logger logger = Logger.getLogger(RoleAssigneeServiceBean.class.getName());
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     @EJB

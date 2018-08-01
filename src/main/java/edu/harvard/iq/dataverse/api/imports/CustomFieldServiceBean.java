@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 public class CustomFieldServiceBean {
 
    
-     @PersistenceContext(unitName = "VDCNet-ejbPU")
+     @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
      
     public CustomFieldMap findByTemplateField(String template, String field) {

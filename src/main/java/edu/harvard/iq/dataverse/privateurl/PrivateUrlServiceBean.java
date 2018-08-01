@@ -29,7 +29,7 @@ public class PrivateUrlServiceBean implements Serializable {
 
     private static final Logger logger = Logger.getLogger(PrivateUrlServiceBean.class.getCanonicalName());
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     @EJB

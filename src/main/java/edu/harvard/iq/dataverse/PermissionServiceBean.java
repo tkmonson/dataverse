@@ -71,7 +71,7 @@ public class PermissionServiceBean {
     @EJB
     DataverseServiceBean dataverseService;
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     EntityManager em;
 
     @EJB

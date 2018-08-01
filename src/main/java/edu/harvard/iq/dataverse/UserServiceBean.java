@@ -25,8 +25,8 @@ public class UserServiceBean {
 
     private static final Logger logger = Logger.getLogger(UserServiceBean.class.getCanonicalName());
 
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
+    private EntityManager em;
     
     @EJB IndexServiceBean indexService;
 

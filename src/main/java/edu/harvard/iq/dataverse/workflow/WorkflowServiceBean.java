@@ -41,7 +41,7 @@ public class WorkflowServiceBean {
     private static final Logger logger = Logger.getLogger(WorkflowServiceBean.class.getName());
     private static final String WORKFLOW_ID_KEY = "WorkflowServiceBean.WorkflowId:";
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     EntityManager em;
     
     @EJB

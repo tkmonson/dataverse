@@ -243,7 +243,7 @@ public abstract class AbstractApiBean {
     @EJB
     MetricsServiceBean metricsSvc;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     protected EntityManager em;
 
     @Context

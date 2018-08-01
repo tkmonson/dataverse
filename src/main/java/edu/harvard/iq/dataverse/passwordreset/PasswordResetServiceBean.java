@@ -35,7 +35,7 @@ public class PasswordResetServiceBean {
     @EJB
     PasswordValidatorServiceBean passwordValidatorService;
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
 
     /**

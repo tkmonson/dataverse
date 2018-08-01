@@ -25,7 +25,7 @@ import javax.persistence.TypedQuery;
 public class DataverseLinkingServiceBean implements java.io.Serializable {
     private static final Logger logger = Logger.getLogger(DataverseLinkingServiceBean.class.getCanonicalName());
 
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     @EJB

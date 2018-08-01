@@ -47,7 +47,7 @@ public class HarvestingClientServiceBean implements java.io.Serializable {
     @EJB
     DataverseTimerServiceBean dataverseTimerService;
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "VDCNet-ejbPU-1")
     private EntityManager em;
     
     private static final Logger logger = Logger.getLogger("edu.harvard.iq.dataverse.harvest.client.HarvestingClinetServiceBean");
