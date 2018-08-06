@@ -24,10 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -40,8 +39,8 @@ import javax.persistence.TypedQuery;
 public class MapLayerMetadataServiceBean {
     
    
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
-    private EntityManager em;
+    @Inject
+    EntityManagerBean emBean;
     
     @EJB
     DataFileServiceBean dataFileService;
@@ -63,7 +62,7 @@ public class MapLayerMetadataServiceBean {
         if (pk==null){
             return null;
         }
-        return em.find(MapLayerMetadata.class, pk);
+        return emBean.getEntityManager().find(MapLayerMetadata.class, pk);
     }
     
     public MapLayerMetadata save( MapLayerMetadata layer_metadata) {
@@ -71,10 +70,10 @@ public class MapLayerMetadataServiceBean {
             return null;
         }
         if ( layer_metadata.getId() == null ) {
-            em.persist(layer_metadata);
+            emBean.getMaster().persist(layer_metadata);
             return layer_metadata;
 	} else {
-            return em.merge( layer_metadata );
+            return emBean.getMaster().merge( layer_metadata );
 	}
     }
     
@@ -92,7 +91,7 @@ public class MapLayerMetadataServiceBean {
      
         try{
  //           String sqlStatement = 
-            Query query = em.createQuery("select m from MapLayerMetadata m WHERE m.dataFile=:datafile",  MapLayerMetadata.class);
+            Query query = emBean.getMaster().createQuery("select m from MapLayerMetadata m WHERE m.dataFile=:datafile",  MapLayerMetadata.class);
             query.setParameter("datafile", datafile);
             query.setMaxResults(1);
             //entityManager.createQuery(SQL_QUERY).setParameter(arg0,arg1).setMaxResults(10).getResultList();
@@ -125,7 +124,7 @@ public class MapLayerMetadataServiceBean {
             
             // Remove the actual map metadata
             //
-            em.remove(em.merge(mapLayerMetadata));
+            emBean.getMaster().remove(emBean.getMaster().merge(mapLayerMetadata));
 
             return true;
         }
@@ -137,10 +136,10 @@ public class MapLayerMetadataServiceBean {
         if ((layer_name == null)){//||(datafile==null)){
             return null;
         }
-        //Query query = em.createQuery("select o.id from MapLayerMetadta as o where o.layer_name =:layerName and o.datafile_id =:datafileID;");
-        //Query query = em.createQuery("select m from MapLayerMetadata m where m.layer_name =:layerName ;");
+        //Query query = emBean.getMaster().createQuery("select o.id from MapLayerMetadta as o where o.layer_name =:layerName and o.datafile_id =:datafileID;");
+        //Query query = emBean.getMaster().createQuery("select m from MapLayerMetadata m where m.layer_name =:layerName ;");
         try{
-            return em.createQuery("select m from MapLayerMetadata m WHERE m.layerName=:layerName", MapLayerMetadata.class)
+            return emBean.getMaster().createQuery("select m from MapLayerMetadata m WHERE m.layerName=:layerName", MapLayerMetadata.class)
 					.setParameter("layerName", layer_name)
 					.getSingleResult();
         } catch ( NoResultException nre ) {
@@ -154,7 +153,7 @@ public class MapLayerMetadataServiceBean {
         if (dataset == null){
             return null;
         }
-        TypedQuery<MapLayerMetadata> query = em.createQuery("select object(o) from MapLayerMetadata as o where o.dataset=:dataset", MapLayerMetadata.class);// order by o.name");
+        TypedQuery<MapLayerMetadata> query = emBean.getMaster().createQuery("select object(o) from MapLayerMetadata as o where o.dataset=:dataset", MapLayerMetadata.class);// order by o.name");
         query.setParameter("dataset", dataset);
         return query.getResultList();
     }    
@@ -397,7 +396,7 @@ public class MapLayerMetadataServiceBean {
     }
 
     public List<MapLayerMetadata> findAll() {
-        TypedQuery<MapLayerMetadata> typedQuery = em.createNamedQuery("MapLayerMetadata.findAll", MapLayerMetadata.class);
+        TypedQuery<MapLayerMetadata> typedQuery = emBean.getMaster().createNamedQuery("MapLayerMetadata.findAll", MapLayerMetadata.class);
         List<MapLayerMetadata> mapLayerMetadatas = typedQuery.getResultList();
         return mapLayerMetadatas;
     }

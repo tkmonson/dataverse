@@ -37,6 +37,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -94,13 +95,17 @@ public class DatasetServiceBean implements java.io.Serializable {
     @EJB
     SystemConfig systemConfig;
 
+    @Inject
+    EntityManagerBean emBean;
+    
+    
     private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
     
-    @PersistenceContext(unitName = "VDCNet-ejbPU")
+    @PersistenceContext(unitName = "masterPU")
     protected EntityManager em;
 
     public Dataset find(Object pk) {
-        return em.find(Dataset.class, pk);
+        return emBean.getEntityManager().find(Dataset.class, pk);
     }
 
     public List<Dataset> findByOwnerId(Long ownerId) {
@@ -113,7 +118,7 @@ public class DatasetServiceBean implements java.io.Serializable {
 
     private List<Dataset> findByOwnerId(Long ownerId, boolean onlyPublished) {
         List<Dataset> retList = new ArrayList<>();
-        TypedQuery<Dataset>  query = em.createQuery("select object(o) from Dataset as o where o.owner.id =:ownerId order by o.id", Dataset.class);
+        TypedQuery<Dataset>  query = emBean.getMaster().createQuery("select object(o) from Dataset as o where o.owner.id =:ownerId order by o.id", Dataset.class);
         query.setParameter("ownerId", ownerId);
         if (!onlyPublished) {
             return query.getResultList();
@@ -134,11 +139,11 @@ public class DatasetServiceBean implements java.io.Serializable {
     private List<Long> findIdsByOwnerId(Long ownerId, boolean onlyPublished) {
         List<Long> retList = new ArrayList<>();
         if (!onlyPublished) {
-            TypedQuery<Long> query = em.createQuery("select o.id from Dataset as o where o.owner.id =:ownerId order by o.id", Long.class);
+            TypedQuery<Long> query = emBean.getMaster().createQuery("select o.id from Dataset as o where o.owner.id =:ownerId order by o.id", Long.class);
             query.setParameter("ownerId", ownerId);
             return query.getResultList();
         } else {
-            TypedQuery<Dataset> query = em.createQuery("select object(o) from Dataset as o where o.owner.id =:ownerId order by o.id", Dataset.class);
+            TypedQuery<Dataset> query = emBean.getMaster().createQuery("select object(o) from Dataset as o where o.owner.id =:ownerId order by o.id", Dataset.class);
             query.setParameter("ownerId", ownerId);
             for (Dataset ds : query.getResultList()) {
                 if (ds.isReleased() && !ds.isDeaccessioned()) {
@@ -150,16 +155,16 @@ public class DatasetServiceBean implements java.io.Serializable {
     }
 
     public List<Dataset> findAll() {
-        return em.createQuery("select object(o) from Dataset as o order by o.id", Dataset.class).getResultList();
+        return emBean.getMaster().createQuery("select object(o) from Dataset as o order by o.id", Dataset.class).getResultList();
     }
     
     
     public List<Long> findAllLocalDatasetIds() {
-        return em.createQuery("SELECT o.id FROM Dataset o WHERE o.harvestedFrom IS null ORDER BY o.id", Long.class).getResultList();
+        return emBean.getMaster().createQuery("SELECT o.id FROM Dataset o WHERE o.harvestedFrom IS null ORDER BY o.id", Long.class).getResultList();
     }
     
     public List<Long> findAllUnindexed() {
-        return em.createQuery("SELECT o.id FROM Dataset o WHERE o.indexTime IS null ORDER BY o.id DESC", Long.class).getResultList();
+        return emBean.getMaster().createQuery("SELECT o.id FROM Dataset o WHERE o.indexTime IS null ORDER BY o.id DESC", Long.class).getResultList();
     }
 
     /**
@@ -176,7 +181,7 @@ public class DatasetServiceBean implements java.io.Serializable {
             numPartitions = saneNumPartitions;
         }
         String skipClause = skipIndexed ? "AND o.indexTime is null " : "";
-        TypedQuery<Long> typedQuery = em.createQuery("SELECT o.id FROM Dataset o WHERE MOD( o.id, :numPartitions) = :partitionId " +
+        TypedQuery<Long> typedQuery = emBean.getMaster().createQuery("SELECT o.id FROM Dataset o WHERE MOD( o.id, :numPartitions) = :partitionId " +
                 skipClause +
                 "ORDER BY o.id", Long.class);
         typedQuery.setParameter("numPartitions", numPartitions);
@@ -190,7 +195,7 @@ public class DatasetServiceBean implements java.io.Serializable {
      * @return The managed entity representing {@code ds}.
      */
     public Dataset merge( Dataset ds ) {
-        return em.merge(ds);
+        return emBean.getMaster().merge(ds);
     }
     
     public Dataset findByGlobalId(String globalId) {
@@ -225,7 +230,7 @@ public class DatasetServiceBean implements java.io.Serializable {
         
         String identifier; 
         do {
-            StoredProcedureQuery query = this.em.createNamedStoredProcedureQuery("Dataset.generateIdentifierAsSequentialNumber");
+            StoredProcedureQuery query = this.emBean.getMaster().createNamedStoredProcedureQuery("Dataset.generateIdentifierAsSequentialNumber");
             query.execute();
             Integer identifierNumeric = (Integer) query.getOutputParameterValue(1); 
             // some diagnostics here maybe - is it possible to determine that it's failing 
@@ -266,7 +271,7 @@ public class DatasetServiceBean implements java.io.Serializable {
     }
     
     public boolean isIdentifierLocallyUnique(String identifier, Dataset dataset) {
-        return em.createNamedQuery("Dataset.findByIdentifierAuthorityProtocol")
+        return emBean.getMaster().createNamedQuery("Dataset.findByIdentifierAuthorityProtocol")
             .setParameter("identifier", identifier)
             .setParameter("authority", dataset.getAuthority())
             .setParameter("protocol", dataset.getProtocol())
@@ -282,7 +287,7 @@ public class DatasetServiceBean implements java.io.Serializable {
         Long dsId = dataset.getId();
         if (dsId != null) {
             try {
-                idResults = em.createNamedQuery("Dataset.findByOwnerIdentifier")
+                idResults = emBean.getMaster().createNamedQuery("Dataset.findByOwnerIdentifier")
                                 .setParameter("owner_id", dsId).getResultList();
             } catch (NoResultException ex) {
                 logger.log(Level.FINE, "No files found in dataset id {0}. Returning a count of zero.", dsId);
@@ -303,7 +308,7 @@ public class DatasetServiceBean implements java.io.Serializable {
     }
 
     public DatasetVersion storeVersion( DatasetVersion dsv ) {
-        em.persist(dsv);
+        emBean.getMaster().persist(dsv);
         return dsv;
     }
       
@@ -489,7 +494,7 @@ public class DatasetServiceBean implements java.io.Serializable {
 
     public DatasetVersionUser getDatasetVersionUser(DatasetVersion version, User user) {
 
-        TypedQuery<DatasetVersionUser> query = em.createNamedQuery("DatasetVersionUser.findByVersionIdAndUserId", DatasetVersionUser.class);
+        TypedQuery<DatasetVersionUser> query = emBean.getMaster().createNamedQuery("DatasetVersionUser.findByVersionIdAndUserId", DatasetVersionUser.class);
         query.setParameter("versionId", version.getId());
         String identifier = user.getIdentifier();
         identifier = identifier.startsWith("@") ? identifier.substring(1) : identifier;
@@ -503,7 +508,7 @@ public class DatasetServiceBean implements java.io.Serializable {
     }
 
     public boolean checkDatasetLock(Long datasetId) {
-        TypedQuery<DatasetLock> lockCounter = em.createNamedQuery("DatasetLock.getLocksByDatasetId", DatasetLock.class);
+        TypedQuery<DatasetLock> lockCounter = emBean.getMaster().createNamedQuery("DatasetLock.getLocksByDatasetId", DatasetLock.class);
         lockCounter.setParameter("datasetId", datasetId);
         lockCounter.setMaxResults(1);
         List<DatasetLock> lock = lockCounter.getResultList();
@@ -523,11 +528,11 @@ public class DatasetServiceBean implements java.io.Serializable {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) /*?*/
     public DatasetLock addDatasetLock(Long datasetId, DatasetLock.Reason reason, Long userId, String info) {
 
-        Dataset dataset = em.find(Dataset.class, datasetId);
+        Dataset dataset = emBean.getEntityManager().find(Dataset.class, datasetId);
 
         AuthenticatedUser user = null;
         if (userId != null) {
-            user = em.find(AuthenticatedUser.class, userId);
+            user = emBean.getEntityManager().find(AuthenticatedUser.class, userId);
         }
 
         // Check if the dataset is already locked for this reason:
@@ -566,13 +571,13 @@ public class DatasetServiceBean implements java.io.Serializable {
             new HashSet<>(dataset.getLocks()).stream()
                     .filter( l -> l.getReason() == aReason )
                     .forEach( lock -> {
-                        lock = em.merge(lock);
+                        lock = emBean.getMaster().merge(lock);
                         dataset.removeLock(lock);
 
                         AuthenticatedUser user = lock.getUser();
                         user.getDatasetLocks().remove(lock);
 
-                        em.remove(lock);
+                        emBean.getMaster().remove(lock);
                     });
         }
     }
@@ -600,7 +605,7 @@ public class DatasetServiceBean implements java.io.Serializable {
         }
         
         try {
-            return (String) em.createNativeQuery("select dfv.value  from dataset d "
+            return (String) emBean.getMaster().createNativeQuery("select dfv.value  from dataset d "
                 + " join datasetversion v on d.id = v.dataset_id "
                 + " join datasetfield df on v.id = df.datasetversion_id "
                 + " join datasetfieldvalue dfv on df.id = dfv.datasetfield_id "
@@ -619,7 +624,7 @@ public class DatasetServiceBean implements java.io.Serializable {
     
     public Dataset getDatasetByHarvestInfo(Dataverse dataverse, String harvestIdentifier) {
         String queryStr = "SELECT d FROM Dataset d, DvObject o WHERE d.id = o.id AND o.owner.id = " + dataverse.getId() + " and d.harvestIdentifier = '" + harvestIdentifier + "'";
-        Query query = em.createQuery(queryStr);
+        Query query = emBean.getMaster().createQuery(queryStr);
         List resultList = query.getResultList();
         Dataset dataset = null;
         if (resultList.size() > 1) {
@@ -659,7 +664,7 @@ public class DatasetServiceBean implements java.io.Serializable {
         List<Object[]> searchResults;
         
         try {
-            searchResults = em.createNativeQuery(qstr).getResultList();
+            searchResults = emBean.getMaster().createNativeQuery(qstr).getResultList();
         } catch (Exception ex) {
             searchResults = null;
         }
@@ -824,7 +829,7 @@ public class DatasetServiceBean implements java.io.Serializable {
     
     public void updateLastExportTimeStamp(Long datasetId) {
         Date now = new Date();
-        em.createNativeQuery("UPDATE Dataset SET lastExportTime='"+now.toString()+"' WHERE id="+datasetId).executeUpdate();
+        emBean.getMaster().createNativeQuery("UPDATE Dataset SET lastExportTime='"+now.toString()+"' WHERE id="+datasetId).executeUpdate();
     }
 
     public Dataset setNonDatasetFileAsThumbnail(Dataset dataset, InputStream inputStream) {
@@ -868,10 +873,10 @@ public class DatasetServiceBean implements java.io.Serializable {
     }
     
     // persist assigned thumbnail in a single one-field-update query:
-    // (the point is to avoid doing an em.merge() on an entire dataset object...)
+    // (the point is to avoid doing an emBean.getMaster().merge() on an entire dataset object...)
     public void assignDatasetThumbnailByNativeQuery(Long datasetId, Long dataFileId) {
         try {
-            em.createNativeQuery("UPDATE dataset SET thumbnailfile_id=" + dataFileId + " WHERE id=" + datasetId).executeUpdate();
+            emBean.getMaster().createNativeQuery("UPDATE dataset SET thumbnailfile_id=" + dataFileId + " WHERE id=" + datasetId).executeUpdate();
         } catch (Exception ex) {
             // it's ok to just ignore... 
         }
@@ -879,14 +884,14 @@ public class DatasetServiceBean implements java.io.Serializable {
     
     public void assignDatasetThumbnailByNativeQuery(Dataset dataset, DataFile dataFile) {
         try {
-            em.createNativeQuery("UPDATE dataset SET thumbnailfile_id=" + dataFile.getId() + " WHERE id=" + dataset.getId()).executeUpdate();
+            emBean.getMaster().createNativeQuery("UPDATE dataset SET thumbnailfile_id=" + dataFile.getId() + " WHERE id=" + dataset.getId()).executeUpdate();
         } catch (Exception ex) {
             // it's ok to just ignore... 
         }
     }
 
     public WorkflowComment addWorkflowComment(WorkflowComment workflowComment) {
-        em.persist(workflowComment);
+        emBean.getMaster().persist(workflowComment);
         return workflowComment;
     }
     
@@ -976,7 +981,7 @@ public class DatasetServiceBean implements java.io.Serializable {
                     datafile.setGlobalIdCreateTime(new Date());
                 }
                 
-                DataFile merged = em.merge(datafile);
+                DataFile merged = emBean.getMaster().merge(datafile);
                 merged = null; 
             }
 
