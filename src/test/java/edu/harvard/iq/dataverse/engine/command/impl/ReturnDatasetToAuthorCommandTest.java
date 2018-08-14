@@ -75,9 +75,6 @@ public class ReturnDatasetToAuthorCommandTest {
             @Override
             public DatasetServiceBean datasets() {
                 return new DatasetServiceBean() {
-                    {
-                        em = new NoOpTestEntityManager();
-                    }
                         
                     @Override
                     public DatasetVersionUser getDatasetVersionUser(DatasetVersion version, User user) {

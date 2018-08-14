@@ -100,9 +100,6 @@ public class DatasetServiceBean implements java.io.Serializable {
     
     
     private static final SimpleDateFormat logFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-    
-    @PersistenceContext(unitName = "masterPU")
-    protected EntityManager em;
 
     public Dataset find(Object pk) {
         return emBean.getEntityManager().find(Dataset.class, pk);
@@ -520,8 +517,8 @@ public class DatasetServiceBean implements java.io.Serializable {
         lock.setDataset(dataset);
         dataset.addLock(lock);
         lock.setStartTime( new Date() );
-        em.persist(lock);
-        em.merge(dataset); 
+        emBean.getMaster().persist(lock);
+        emBean.getMaster().merge(dataset); 
         return lock;
     }
     
